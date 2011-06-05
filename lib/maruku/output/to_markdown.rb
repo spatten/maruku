@@ -22,7 +22,6 @@
 class String
 	# XXX: markdown escaping
 	def to_md(c=nil)
-    puts "calling String#to_md on '#{to_s}'"
 		to_s
 	end
 	
@@ -52,8 +51,16 @@ module MaRuKu; module Out; module Markdown
   end
 
   def to_md_im_link(context)
-    puts "printing md_im_link"
     "[#{children_to_md(context)}](#{@url})"
+  end
+
+  def to_md_link(context)
+    "[#{children_to_md(context)}][#{@ref_id}]"
+  end
+
+  def to_md_ref_definition(context)
+    puts "md_ref_def!"
+    "[#{@ref_id}] #{@url}"
   end
 	
 	def to_md_li_span(context)
@@ -141,13 +148,13 @@ module MaRuKu; module Out; module Markdown
 
 	def array_to_md(array, context, join_char='')
 		e = []
-    puts "running array_to_md on array: #{array.inspect}"
 		array.each do |c|
+      puts "#array_to_md on #{c.inspect}"
+      puts "   class of c: #{c.class}"
+      puts "   node_type:  #{c.node_type}" if c.respond_to? :node_type
 			method = c.kind_of?(MDElement) ? 
 			   "to_md_#{c.node_type}" : "to_md"
 
-      puts "ele: #{ c.inspect} (#{c.class}), node_type = #{c.respond_to?(:node_type) ? c.node_type : "not a node"}"
-      puts "calling to_md with method #{method}"
 			if not c.respond_to?(method)
 				#raise "Object does not answer to #{method}: #{c.class} #{c.inspect[0,100]}"
 				# tell_user "Using default for #{c.node_type}"

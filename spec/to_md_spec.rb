@@ -39,11 +39,27 @@ describe "#to_md" do
       @md.should match %r{\)\sof epic}
     end
 
-    it "should be pretty" do
-      puts "original md: #{@original_md}"
-      puts "final md: #{@md}"
-      puts "doc: #{@doc.inspect}"
+  end
+
+  context "for a document with a reference link" do
+    before(:each) do
+      @original_md = "This [is a link][example] of epic proportions.\n\n[example]: http://www.example.com\n"
+      @doc = Maruku.new(@original_md)
+      @md = @doc.to_md
     end
 
+    it "should contain the link" do
+      @md.should match /\[is a link\]\[example\]/
+    end
+
+    it "should contain the reference" do
+      @md.should match /\[example\]\s?http:\/\/www\.example\.com/
+    end
+
+    it "should be pretty" do
+      puts "original:\n#{@original_md}"
+      puts "final:\n#{@md}"
+      puts "doc:\n#{@doc.inspect}"
+    end
   end
 end
