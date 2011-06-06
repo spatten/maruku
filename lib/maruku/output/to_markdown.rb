@@ -112,7 +112,6 @@ module MaRuKu; module Out; module Markdown
   end
   
   def to_md_ref_definition(context)
-    puts "md_ref_def!"
     "[#{@ref_id}] #{@url}#{" #{@title}" if @title}"
   end
 	
@@ -202,9 +201,9 @@ module MaRuKu; module Out; module Markdown
 	def array_to_md(array, context, join_char='')
 		e = []
 		array.each do |c|
-      puts "#array_to_md on #{c.inspect}"
-      puts "   class of c: #{c.class}"
-      puts "   node_type:  #{c.node_type}" if c.respond_to? :node_type
+      # puts "#array_to_md on #{c.inspect}"
+      # puts "   class of c: #{c.class}"
+      # puts "   node_type:  #{c.node_type}" if c.respond_to? :node_type
 			method = c.kind_of?(MDElement) ? 
 			   "to_md_#{c.node_type}" : "to_md"
 
