@@ -27,9 +27,13 @@ class String
 	
 	# " andrea censi " => [" andrea ", "censi "]
 	def mysplit
-		split.map{|x| x+" "}
+		res = split.map{|x| x+" "}
+    if self[0] == 32
+      res[0] = " " + res[0]
+    end
+    res
 	end
-end
+end 
 
 
 module MaRuKu; module Out; module Markdown 
@@ -39,28 +43,77 @@ module MaRuKu; module Out; module Markdown
 	def to_md(context={})
 		children_to_md(context)
 	end
-	
-	def to_md_paragraph(context)
-		line_length = context[:line_length] || DefaultLineLength
-		wrap(@children, line_length, context)+"\n"
-	end
 
   def to_md_header(context)
     pounds = "#" * @level
     "#{pounds} #{children_to_md(context)}\n\n"
   end
 
+  def to_md_inline_code(context)
+    "`#{@raw_code}`"
+  end
+
+  def to_md_code(context)
+    @raw_code.split("\n").collect { |line| "     " + line}.join "\n"
+  end
+
+  def to_md_quote(context)
+    line_length = (context[:line_length] || DefaultLineLength) - 2
+    wrap(@children, line_length, context).split(/\n/).collect { |line| "> " + line}.join("\n") + "\n"
+  end
+
+  def to_md_hrule(context)
+    "* * *"
+  end
+
+  def to_md_emphasis(context)
+    "*" + children_to_md(context) + "*"
+  end
+
+  def to_md_strong(context)
+    "**" + children_to_md(context) + "**"
+  end
+
+  def to_md_immediate_link(context)
+    "<#{@url}>"
+  end
+ 
+  def to_md_email_address(context)
+    "<#{@email}>"
+  end
+
+  def to_md_entity(context)
+    @entity_name
+  end
+
+  def to_md_linebreak(context)
+    "\n"
+  end
+  
+	def to_md_paragraph(context)
+		line_length = context[:line_length] || DefaultLineLength
+		wrap(@children, line_length, context)+"\n"
+	end
+ 
   def to_md_im_link(context)
-    "[#{children_to_md(context)}](#{@url})"
+    "[#{children_to_md(context)}](#{@url}#{" #{@title}" if @title})"
   end
 
   def to_md_link(context)
     "[#{children_to_md(context)}][#{@ref_id}]"
   end
 
+  def to_md_im_image(context)
+    "![#{children_to_md(context)}](#{@url}#{" #{@title}" if @title})"
+  end
+
+  def to_md_image(context)
+    "![#{children_to_md(context)}][#{@ref_id}]"
+  end
+  
   def to_md_ref_definition(context)
     puts "md_ref_def!"
-    "[#{@ref_id}] #{@url}"
+    "[#{@ref_id}] #{@url}#{" #{@title}" if @title}"
   end
 	
 	def to_md_li_span(context)

@@ -62,4 +62,44 @@ describe "#to_md" do
       puts "doc:\n#{@doc.inspect}"
     end
   end
+
+  context "for a quote" do
+    before(:each) do
+      @original_md = "Here is a quote:\n>  \n> line one\n>  \n> line two\n>  \n> line three\n\nthe end."
+      @doc = Maruku.new(@original_md)
+      @md = @doc.to_md      
+    end
+
+    it "should be pretty" do
+      puts "original:\n#{@original_md}"
+      puts "final:\n#{@md}"
+      puts "doc:\n#{@doc.inspect}"
+    end
+  end
+
+  context "for something more complicated" do
+    before(:each) do
+      @original_md = <<-MARKDOWN
+# Chapter 1
+
+It was a *dark* and **stormy** night.
+
+suddenly a shot rang out!
+
+<http://www.cliche.com>
+
+> What am I *talking* about, this is crazy!
+> well, see what I mean?
+> Hmph.
+
+MARKDOWN
+      @doc = Maruku.new(@original_md)
+      @md = @doc.to_md      
+    end
+
+    it "should be pretty" do
+      puts "original:\n#{@original_md}"
+      puts "final:\n#{@md}"
+      puts "doc:\n#{@doc.inspect}"
+    end  end
 end
